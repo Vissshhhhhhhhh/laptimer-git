@@ -1,0 +1,200 @@
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, black 0%, white 50%, #ffd700 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #222;
+      }
+
+      .cont {
+        background: rgba(255, 255, 255, 0.85);
+        width: 400px;
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
+        text-align: center;
+        color: #222;
+      }
+
+      h1 {
+        font-size: 36px;
+        margin-bottom: 25px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+      }
+
+      .timer {
+        font-size: 48px;
+        font-weight: 600;
+        margin-bottom: 35px;
+        letter-spacing: 3px;
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #ffd700;
+        border: none;
+        color: black;
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.6);
+        min-width: 80px;
+        text-align: center;
+        margin: 0;
+      }
+
+      button:hover {
+        background-color: #e6c200;
+        box-shadow: 0 6px 18px rgba(230, 194, 0, 0.8);
+      }
+
+      .laps {
+        margin-top: 20px;
+        max-height: 150px;
+        overflow-y: auto;
+        background: #f0f0f0;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: left;
+        box-shadow: inset 0 0 5px #ccc;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 18px;
+        color: #444;
+        user-select: none;
+      }
+
+      @media (max-width: 480px) {
+        .cont {
+          width: 90%;
+          padding: 30px 20px;
+        }
+
+        .timer {
+          font-size: 36px;
+        }
+
+        button {
+          padding: 10px 20px;
+          font-size: 14px;
+          min-width: 65px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cont">
+      <h1>Stopwatch</h1>
+      <div class="timer">00:00:00.000</div>
+      <br /><br />
+      <button class="start" onclick="start()">Start</button>
+      <button class="start" onclick="stop()">Stop</button>
+      <button class="start" onclick="reset()">Reset</button>
+      <button class="start" onclick="laps()">Lap</button>
+
+      <div class="laps"></div>
+    </div>
+
+    <script>
+      let milliseconds = 0;
+      let sec = 0;
+      let min = 0;
+      let hr = 0;
+      let timer = null;
+
+      function update() {
+        document.querySelector(".timer").innerHTML =
+          (hr < 10 ? "0" + hr : hr) +
+          ":" +
+          (min < 10 ? "0" + min : min) +
+          ":" +
+          (sec < 10 ? "0" + sec : sec) +
+          ":" +
+          (milliseconds < 100
+            ? milliseconds < 10
+              ? "00" + milliseconds
+              : "0" + milliseconds
+            : milliseconds);
+      }
+
+      function start() {
+        if (timer === null) {
+          timer = setInterval(function () {
+            milliseconds += 10;
+
+            if (milliseconds >= 1000) {
+              milliseconds = 0;
+              sec++;
+            }
+
+            if (sec >= 60) {
+              sec = 0;
+              min++;
+            }
+
+            if (min >= 60) {
+              min = 0;
+              hr++;
+            }
+            update();
+          }, 10);
+        }
+      }
+
+      function stop() {
+        clearInterval(timer);
+        timer = null;
+      }
+
+      function laps() {
+        const currentTime =
+          (hr < 10 ? "0" + hr : hr) +
+          ":" +
+          (min < 10 ? "0" + min : min) +
+          ":" +
+          (sec < 10 ? "0" + sec : sec) +
+          "." +
+          (milliseconds < 100
+            ? milliseconds < 10
+              ? "00" + milliseconds
+              : "0" + milliseconds
+            : milliseconds);
+
+        const lapContainer = document.querySelector(".laps");
+        const lap = document.createElement("div");
+        lap.textContent = currentTime;
+        lap.style.margin = "5px 0";
+        lap.style.fontFamily = "'Courier New', Courier, monospace";
+        lap.style.fontSize = "18px";
+        lap.style.color = "#444";
+        lapContainer.appendChild(lap);
+      }
+      function reset() {
+        milliseconds = 0;
+        sec = 0;
+        min = 0;
+        hr = 0;
+        update();
+        document.querySelector(".laps").innerHTML = "";
+        update();
+      }
+    </script>
+  </body>
+</html>
